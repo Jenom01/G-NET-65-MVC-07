@@ -1,0 +1,49 @@
+[
+  {
+    "MemberEmail": "ahmed.hassan@example.com",
+    "Session": "Boxing Fundamentals"
+  },
+  {
+    "MemberEmail": "ahmed.hassan@example.com",
+    "Session": "Evening Yoga"
+  },
+  {
+    "MemberEmail": "ahmed.hassan@example.com",
+    "Session": "Yoga for Beginners"
+  },
+  {
+    "MemberEmail": "ahmed.hassan@example.com",
+    "Session": "Pilates Basics"
+  },
+
+  {
+    "MemberEmail": "sara.mahmoud@example.com",
+    "Session": "Morning Yoga Flow"
+  },
+  {
+    "MemberEmail": "sara.mahmoud@example.com",
+    "Session": "Boxing Cardio Blast"
+  },
+  {
+    "MemberEmail": "sara.mahmoud@example.com",
+    "Session": "Private Cardio Session"
+  },
+
+  {
+    "MemberEmail": "omar.khaled@example.com",
+    "Session": "CrossFit WOD"
+  },
+
+  {
+    "MemberEmail": "nour.ibrahim@example.com",
+    "Session": "Boxing Technique"
+  },
+  {
+    "MemberEmail": "nour.ibrahim@example.com",
+    "Session": "Yoga for Beginners"
+  },
+  {
+    "MemberEmail": "nour.ibrahim@example.com",
+    "Session": "Pilates Basics"
+  }
+]

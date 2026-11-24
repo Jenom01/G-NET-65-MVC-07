@@ -1,0 +1,139 @@
+[
+  {
+    "Description": "Boxing Fundamentals",
+    "Category": "Boxing",
+    "TrainerEmail": "karim.fawzy@example.com",
+    "StartOffsetHours": -72,
+    "DurationMinutes": 60,
+    "Capacity": 15,
+    "Scenario": "completed"
+  },
+  {
+    "Description": "Morning Yoga Flow",
+    "Category": "Yoga",
+    "TrainerEmail": "mona.rashad@example.com",
+    "StartOffsetHours": -48,
+    "DurationMinutes": 60,
+    "Capacity": 20,
+    "Scenario": "completed"
+  },
+  {
+    "Description": "CrossFit WOD",
+    "Category": "CrossFit",
+    "TrainerEmail": "hossam.nabil@example.com",
+    "StartOffsetHours": -24,
+    "DurationMinutes": 60,
+    "Capacity": 12,
+    "Scenario": "completed"
+  },
+  {
+    "Description": "Zumba Party",
+    "Category": "Zumba",
+    "TrainerEmail": "layla.mansour@example.com",
+    "StartOffsetHours": -96,
+    "DurationMinutes": 45,
+    "Capacity": 25,
+    "Scenario": "completed, no bookings, trainer has only past sessions"
+  },
+
+  {
+    "Description": "Boxing Cardio Blast",
+    "Category": "Boxing",
+    "TrainerEmail": "karim.fawzy@example.com",
+    "StartOffsetHours": -0.5,
+    "DurationMinutes": 90,
+    "Capacity": 15,
+    "Scenario": "ongoing, has a booking"
+  },
+  {
+    "Description": "Spin Express",
+    "Category": "Cycling",
+    "TrainerEmail": "tamer.fouad@example.com",
+    "StartOffsetHours": -0.25,
+    "DurationMinutes": 60,
+    "Capacity": 18,
+    "Scenario": "ongoing, no bookings"
+  },
+
+  {
+    "Description": "Evening Yoga",
+    "Category": "Yoga",
+    "TrainerEmail": "mona.rashad@example.com",
+    "StartOffsetHours": 3,
+    "DurationMinutes": 60,
+    "Capacity": 20,
+    "Scenario": "upcoming, soon"
+  },
+  {
+    "Description": "Boxing Technique",
+    "Category": "Boxing",
+    "TrainerEmail": "karim.fawzy@example.com",
+    "StartOffsetHours": 48,
+    "DurationMinutes": 60,
+    "Capacity": 10,
+    "Scenario": "upcoming"
+  },
+  {
+    "Description": "Yoga for Beginners",
+    "Category": "Yoga",
+    "TrainerEmail": "mona.rashad@example.com",
+    "StartOffsetHours": 96,
+    "DurationMinutes": 60,
+    "Capacity": 2,
+    "Scenario": "upcoming, becomes full"
+  },
+  {
+    "Description": "Pilates Basics",
+    "Category": "Pilates",
+    "TrainerEmail": "dina.salah@example.com",
+    "StartOffsetHours": 24,
+    "DurationMinutes": 90,
+    "Capacity": 3,
+    "Scenario": "upcoming, 1 slot left"
+  },
+  {
+    "Description": "Strength Foundations",
+    "Category": "Strength Training",
+    "TrainerEmail": "mahmoud.reda@example.com",
+    "StartOffsetHours": 72,
+    "DurationMinutes": 75,
+    "Capacity": 20,
+    "Scenario": "upcoming, no bookings"
+  },
+  {
+    "Description": "Private Cardio Session",
+    "Category": "Cardio",
+    "TrainerEmail": "salma.tarek@example.com",
+    "StartOffsetHours": 120,
+    "DurationMinutes": 30,
+    "Capacity": 1,
+    "Scenario": "upcoming, minimum capacity, full"
+  },
+  {
+    "Description": "Pilates Advanced",
+    "Category": "Pilates",
+    "TrainerEmail": "dina.salah@example.com",
+    "StartOffsetHours": 150,
+    "DurationMinutes": 150,
+    "Capacity": 25,
+    "Scenario": "upcoming, maximum capacity, long"
+  },
+  {
+    "Description": "CrossFit Endurance",
+    "Category": "CrossFit",
+    "TrainerEmail": "hossam.nabil@example.com",
+    "StartOffsetHours": 30,
+    "DurationMinutes": 60,
+    "Capacity": 12,
+    "Scenario": "back-to-back pair, first"
+  },
+  {
+    "Description": "CrossFit Strength Circuit",
+    "Category": "CrossFit",
+    "TrainerEmail": "hossam.nabil@example.com",
+    "StartOffsetHours": 31,
+    "DurationMinutes": 60,
+    "Capacity": 12,
+    "Scenario": "back-to-back pair, second (starts when the first ends)"
+  }
+]

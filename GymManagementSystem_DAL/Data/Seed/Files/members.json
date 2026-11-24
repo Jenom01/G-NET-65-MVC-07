@@ -1,0 +1,112 @@
+[
+  {
+    "Name": "Ahmed Hassan",
+    "Email": "ahmed.hassan@example.com",
+    "Phone": "01012345678",
+    "DateOfBirth": "1998-03-14",
+    "Gender": "Male",
+    "JoinedMonthsAgo": 6,
+    "Address": {
+      "City": "Cairo",
+      "Street": "Tahrir St",
+      "BuildingNumber": 12
+    },
+    "HealthRecord": {
+      "Height": 178,
+      "Weight": 82.5,
+      "BloodType": "OPositive",
+      "Note": "No known conditions."
+    }
+  },
+  {
+    "Name": "Sara Mahmoud",
+    "Email": "sara.mahmoud@example.com",
+    "Phone": "01112345678",
+    "DateOfBirth": "2000-07-02",
+    "Gender": "Female",
+    "JoinedMonthsAgo": 4,
+    "Address": {
+      "City": "Giza",
+      "Street": "Pyramids Rd",
+      "BuildingNumber": 45
+    },
+    "HealthRecord": {
+      "Height": 165,
+      "Weight": 58,
+      "BloodType": "APositive",
+      "Note": "Mild asthma."
+    }
+  },
+  {
+    "Name": "Omar Khaled",
+    "Email": "omar.khaled@example.com",
+    "Phone": "01212345678",
+    "DateOfBirth": "1995-11-30",
+    "Gender": "Male",
+    "JoinedMonthsAgo": 3,
+    "Address": {
+      "City": "Alexandria",
+      "Street": "Corniche Rd",
+      "BuildingNumber": 7
+    },
+    "HealthRecord": {
+      "Height": 183,
+      "Weight": 90,
+      "BloodType": "BPositive"
+    }
+  },
+  {
+    "Name": "Nour Ibrahim",
+    "Email": "nour.ibrahim@example.com",
+    "Phone": "01512345678",
+    "DateOfBirth": "2002-01-21",
+    "Gender": "Female",
+    "JoinedMonthsAgo": 2,
+    "Address": {
+      "City": "Assiut",
+      "Street": "Al Gomhoreya St",
+      "BuildingNumber": 3
+    },
+    "HealthRecord": {
+      "Height": 170,
+      "Weight": 62,
+      "BloodType": "ABPositive"
+    }
+  },
+  {
+    "Name": "Youssef Adel",
+    "Email": "youssef.adel@example.com",
+    "Phone": "01023456789",
+    "DateOfBirth": "1990-05-09",
+    "Gender": "Male",
+    "JoinedMonthsAgo": 1,
+    "Address": {
+      "City": "Mansoura",
+      "Street": "El Geish St",
+      "BuildingNumber": 28
+    },
+    "HealthRecord": {
+      "Height": 175,
+      "Weight": 77,
+      "BloodType": "ONegative",
+      "Note": "Previous knee injury, avoid heavy squats."
+    }
+  },
+  {
+    "Name": "Mariam Samir",
+    "Email": "mariam.samir@example.com",
+    "Phone": "01123456789",
+    "DateOfBirth": "1999-09-17",
+    "Gender": "Female",
+    "Address": {
+      "City": "Cairo",
+      "Street": "Maadi Rd",
+      "BuildingNumber": 60
+    },
+    "HealthRecord": {
+      "Height": 160,
+      "Weight": 55,
+      "BloodType": "ANegative"
+    }
+  }
+]

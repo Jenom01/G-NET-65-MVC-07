@@ -1,0 +1,50 @@
+[
+  {
+    "MemberEmail": "ahmed.hassan@example.com",
+    "Plan": "Quarterly",
+    "StartOffsetDays": -180,
+    "Scenario": "expired"
+  },
+  {
+    "MemberEmail": "ahmed.hassan@example.com",
+    "Plan": "Annual",
+    "StartOffsetDays": -60,
+    "Scenario": "active"
+  },
+  {
+    "MemberEmail": "sara.mahmoud@example.com",
+    "Plan": "Monthly",
+    "StartOffsetDays": -120,
+    "Scenario": "expired"
+  },
+  {
+    "MemberEmail": "sara.mahmoud@example.com",
+    "Plan": "Monthly",
+    "StartOffsetDays": -10,
+    "Scenario": "active (renewal)"
+  },
+  {
+    "MemberEmail": "omar.khaled@example.com",
+    "Plan": "Quarterly",
+    "StartOffsetDays": -30,
+    "Scenario": "active"
+  },
+  {
+    "MemberEmail": "nour.ibrahim@example.com",
+    "Plan": "Weekly Pass",
+    "StartOffsetDays": -20,
+    "Scenario": "expired"
+  },
+  {
+    "MemberEmail": "nour.ibrahim@example.com",
+    "Plan": "Monthly",
+    "StartOffsetDays": -3,
+    "Scenario": "active"
+  },
+  {
+    "MemberEmail": "youssef.adel@example.com",
+    "Plan": "Weekly Pass",
+    "StartOffsetDays": -40,
+    "Scenario": "expired, no active membership"
+  }
+]
