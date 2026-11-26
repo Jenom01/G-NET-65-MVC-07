@@ -1,0 +1,23 @@
+﻿@{
+    var items = new[]
+    {
+        "outdoor & online trainers",
+        "personal training",
+        "live classes",
+        "personal trainers",
+    };
+}
+
+<div class="bar bg-primary-color d-flex py-4 text-white fw-bolder align-items-center">
+    <p class="py-0 my-0 overflow-hidden text-nowrap">
+        @for (var i = 0; i < items.Length; i++)
+        {
+            if (i > 0)
+            {
+                <img src="~/images/star.svg" alt="" aria-hidden="true" />
+            }
+            @items[i]
+            <text> </text>
+        }
+    </p>
+</div>

@@ -150,19 +150,26 @@ namespace GymManagementSystem_BLL.Services
             if (await uow.Members.HasActiveBookingsAsync(id, ct))
                 return logger.Rejected("Delete member", MemberErrors.HasActiveBookings, id);
 
+            var photoKey = member.Photo;
+            member.Photo = null;
+
             if (member.HealthRecord is not null)
                 uow.HealthRecords.Delete(member.HealthRecord);
-
-            if (member.Photo is not null)
-            {
-                await attachments.DeleteAsync(member.Photo, CancellationToken.None);
-                member.Photo = null;
-            }
 
             uow.Members.Delete(member);
             await uow.SaveChangesAsync(ct);
 
             logger.LogInformation("Member {MemberId} deleted", id);
+
+            if (!string.IsNullOrEmpty(photoKey))
+            {
+                // the member is already deleted, so cleanup must not be cancelled by the request token
+                var removed = await attachments.DeleteAsync(photoKey, CancellationToken.None);
+                if (removed is Error error)
+                    logger.LogWarning("Member {MemberId} deleted but photo {PhotoKey} was not removed: {Message}",
+                        id, photoKey, error.Message);
+            }
+
             return new Ok();
         }
     }

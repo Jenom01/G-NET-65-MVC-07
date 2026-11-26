@@ -41,6 +41,12 @@
                     <input asp-for="Photo" type="file" class="form-control" accept=".jpg,.jpeg,.png" id="photoInput" />
                     <span asp-validation-for="Photo" class="text-danger"></span>
                     <small class="form-text text-muted">Optional. Max size: 5 MB. Allowed types: JPG, PNG</small>
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <small class="form-text text-warning d-block">
+                            Please select the photo again. Browsers can't keep a chosen file after the page reloads.
+                        </small>
+                    }
                 </div>
                 <div class="col-12 col-md-6">
                     <label asp-for="Name" class="form-label"></label>
@@ -170,6 +176,10 @@
                     preview.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
+            } else {
+                var preview = document.getElementById('photoPreview');   // use your actual preview id
+                preview.removeAttribute('src');
+                preview.style.display = 'none';
             }
         });
     </script>
