@@ -16,6 +16,9 @@ namespace GymManagementSystem_BLL.Errors
         public static readonly Error PhoneExists =
             new("Member.PhoneExists", "This phone number is already used", ErrorType.Conflict, "Phone");
 
+        public static readonly Error PhotoNotFound =
+            new("Member.PhotoNotFound", "Member photo not found.", ErrorType.NotFound);
+
         public static readonly Error HasActiveBookings =
             new("Member.HasActiveBookings", "Cannot delete a member with active bookings", ErrorType.Conflict);
     }

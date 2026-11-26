@@ -5,8 +5,9 @@ namespace GymManagementSystem_BLL.ViewModels.Members
 {
     public class MemberEditViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; } = default!;
-        public string? PhotoUrl { get; set; }
+        public bool HasPhoto { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [StringLength(100, ErrorMessage = "Email must be 100 characters or less")]

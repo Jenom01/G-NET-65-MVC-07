@@ -56,16 +56,17 @@ namespace GymManagementSystem_BLL.Mapping
 
             // ---------- Members ----------
             CreateMap<Member, MemberIndexViewModel>()
-                .ForMember(d => d.PhotoUrl, o => o.MapFrom(s => s.Photo))
+                .ForMember(d => d.HasPhoto, o => o.MapFrom(s => !string.IsNullOrEmpty(s.Photo)))
                 .ForMember(d => d.JoinDate, o => o.MapFrom(s => s.JoinDate ?? s.CreatedAt));
 
             CreateMap<Member, MemberEditViewModel>()
-                .ForMember(d => d.PhotoUrl, o => o.MapFrom(s => s.Photo))
+                .ForMember(d => d.HasPhoto, o => o.MapFrom(s => !string.IsNullOrEmpty(s.Photo)))
                 .ForMember(d => d.BuildingNumber, o => o.MapFrom(s => s.Address.BuildingNumber))
                 .ForMember(d => d.Street, o => o.MapFrom(s => s.Address.Street))
                 .ForMember(d => d.City, o => o.MapFrom(s => s.Address.City));
 
             CreateMap<MemberCreateViewModel, Member>(MemberList.None)
+                .ForMember(d => d.Photo, o => o.Ignore())
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name.Trim()))
                 .ForMember(d => d.Address, o => o.MapFrom(s => new Address
                 {
@@ -75,6 +76,7 @@ namespace GymManagementSystem_BLL.Mapping
                 }));
 
             CreateMap<MemberEditViewModel, Member>(MemberList.None)
+                .ForMember(d => d.Id, o => o.Ignore())
                 .ForMember(d => d.Name, o => o.Ignore())
                 .AfterMap((s, d) =>
                 {

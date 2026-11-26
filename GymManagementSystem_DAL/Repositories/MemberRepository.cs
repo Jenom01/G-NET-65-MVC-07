@@ -22,5 +22,8 @@ namespace GymManagementSystem_DAL.Repositories
                 .SelectMany(m => m.Bookings)
                 .AnyAsync(b => b.Session.EndDate > now, ct);
         }
+
+        public async Task<string?> GetPhotoKeyAsync(int id, CancellationToken ct = default)
+            => await _dbSet.Where(m => m.Id == id).Select(m => m.Photo).FirstOrDefaultAsync(ct);
     }
 }

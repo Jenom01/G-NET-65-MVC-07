@@ -8,8 +8,9 @@
         <div class="col-md-6">
             <div class="card card-details border-0 p-2 shadow">
                 <div class="text-center mt-3">
-                    <img src="@(string.IsNullOrWhiteSpace(Model.PhotoUrl) ? Url.Content("~/images/User.png") : Model.PhotoUrl)" alt="@Model.Name" class="rounded-circle"
-                         style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff; margin-top: -60px;" />
+                    <img src="@(Model.HasPhoto ? Url.Action("Picture", "Members", new { id = Model.Id }) : Url.Content("~/images/User.png"))" alt="@Model.Name" class="rounded-circle"
+                         style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff; margin-top: -60px;" 
+                         onerror="this.onerror=null; this.src='@Url.Content("~/images/User.png")'" />
                 </div>
                 <div class="card-body text-center">
                     <h2 class="mb-1 text-primary-color">@Model.Name</h2>

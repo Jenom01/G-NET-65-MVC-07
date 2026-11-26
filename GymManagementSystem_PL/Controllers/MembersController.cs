@@ -1,4 +1,5 @@
-﻿using GymManagementSystem_BLL.Results;
+﻿using GymManagementSystem_BLL.Attachments;
+using GymManagementSystem_BLL.Results;
 using GymManagementSystem_BLL.Services;
 using GymManagementSystem_BLL.ViewModels.HealthRecords;
 using GymManagementSystem_BLL.ViewModels.Members;
@@ -43,6 +44,15 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpGet]
+        [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> Picture(int id, CancellationToken ct)
+            => await members.GetPhotoAsync(id, ct) switch
+            {
+                AttachmentFile file => File(file.Content, file.ContentType),
+                Error => NotFound()
+            };
+
+        [HttpGet]
         public async Task<IActionResult> HealthRecordDetails(int id, CancellationToken ct)
             => await members.GetHealthRecordAsync(id, ct) switch
             {
@@ -62,6 +72,8 @@ namespace GymManagementSystem_PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, MemberEditViewModel model, CancellationToken ct)
         {
+            model.Id = id;
+
             if (!ModelState.IsValid) return View(model);
 
             var result = await members.UpdateAsync(id, model, ct);

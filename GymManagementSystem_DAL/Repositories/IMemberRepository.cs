@@ -6,5 +6,6 @@ namespace GymManagementSystem_DAL.Repositories
     {
         Task<Member?> GetDetailsAsync(int id, CancellationToken ct = default);
         Task<bool> HasActiveBookingsAsync(int id, CancellationToken ct = default);
+        Task<string?> GetPhotoKeyAsync(int id, CancellationToken ct = default);
     }
 }

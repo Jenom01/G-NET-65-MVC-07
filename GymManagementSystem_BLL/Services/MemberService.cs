@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymManagementSystem_BLL.Attachments;
 using GymManagementSystem_BLL.Errors;
 using GymManagementSystem_BLL.Helpers;
 using GymManagementSystem_BLL.Results;
@@ -7,10 +8,11 @@ using GymManagementSystem_BLL.ViewModels.Members;
 using GymManagementSystem_DAL.Models;
 using GymManagementSystem_DAL.Repositories;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace GymManagementSystem_BLL.Services
 {
-    public class MemberService(IUnitOfWork uow, IMapper mapper, ILogger<MemberService> logger)
+    public class MemberService(IUnitOfWork uow, IAttachmentService attachments, IMapper mapper, ILogger<MemberService> logger)
         : IMemberService
     {
         public async Task<IEnumerable<MemberIndexViewModel>> GetAllAsync(CancellationToken ct = default)
@@ -28,8 +30,33 @@ namespace GymManagementSystem_BLL.Services
                 return logger.Rejected("Create member", MemberErrors.PhoneExists);
 
             var member = mapper.Map<Member>(model);
+
+            if (model.Photo is not null)
+            {
+                switch (await attachments.SaveAsync(model.Photo, AttachmentFolders.Members, ct))
+                {
+                    case Error error:
+                        return logger.Rejected("Create member", error with { Field = nameof(model.Photo) });
+
+                    case string photoKey:
+                        member.Photo = photoKey;
+                        break;
+                }
+            }
+
             uow.Members.Add(member);
-            await uow.SaveChangesAsync(ct);
+
+            try
+            {
+                await uow.SaveChangesAsync(ct);
+            }
+            catch
+            {
+                // the file was written before the insert, so we don't leave it behind
+                if (member.Photo is not null)
+                    await attachments.DeleteAsync(member.Photo, CancellationToken.None);
+                throw;
+            }
 
             logger.LogInformation("Member {MemberId} created", member.Id);
             return new Ok();
@@ -52,17 +79,26 @@ namespace GymManagementSystem_BLL.Services
             {
                 Id = id,
                 Name = member.Name.Trim(),
-                PhotoUrl = member.Photo,
+                HasPhoto = !string.IsNullOrEmpty(member.Photo),
                 Email = member.Email,
                 Phone = member.Phone,
                 Gender = member.Gender.ToString(),
-                DateOfBirth = member.DateOfBirth.ToShortDateString(),
+                DateOfBirth = member.DateOfBirth.ToString(DateFormats.Display, CultureInfo.InvariantCulture),
                 Address = $"{member.Address.BuildingNumber} - {member.Address.Street} - {member.Address.City}",
 
                 PlanName = activeMembership?.Plan.Name ?? "No Active Plan",
-                MembershipStartDate = activeMembership?.StartDate.ToShortDateString() ?? "N/A",
-                MembershipEndDate = activeMembership?.EndDate.ToShortDateString() ?? "N/A"
+                MembershipStartDate = activeMembership?.StartDate.ToString(DateFormats.Display, CultureInfo.InvariantCulture) ?? "N/A",
+                MembershipEndDate = activeMembership?.EndDate.ToString(DateFormats.Display, CultureInfo.InvariantCulture) ?? "N/A"
             };
+        }
+
+        public async Task<Result<AttachmentFile>> GetPhotoAsync(int id, CancellationToken ct = default)
+        {
+            var photoKey = await uow.Members.GetPhotoKeyAsync(id, ct);
+
+            if (string.IsNullOrEmpty(photoKey)) return MemberErrors.PhotoNotFound;
+
+            return await attachments.GetAsync(photoKey, ct);
         }
 
         public async Task<Result<HealthRecordDetailsViewModel>> GetHealthRecordAsync(int memberId, CancellationToken ct = default)
@@ -116,6 +152,12 @@ namespace GymManagementSystem_BLL.Services
 
             if (member.HealthRecord is not null)
                 uow.HealthRecords.Delete(member.HealthRecord);
+
+            if (member.Photo is not null)
+            {
+                await attachments.DeleteAsync(member.Photo, CancellationToken.None);
+                member.Photo = null;
+            }
 
             uow.Members.Delete(member);
             await uow.SaveChangesAsync(ct);

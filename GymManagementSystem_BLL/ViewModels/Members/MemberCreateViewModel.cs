@@ -1,6 +1,7 @@
 ﻿using GymManagementSystem_BLL.Validation;
 using GymManagementSystem_BLL.ViewModels.HealthRecords;
 using GymManagementSystem_DAL.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace GymManagementSystem_BLL.ViewModels.Members
@@ -44,6 +45,8 @@ namespace GymManagementSystem_BLL.ViewModels.Members
         [StringLength(30, MinimumLength = 2, ErrorMessage = "Street must be between 2 and 30 characters")]
         [RegularExpression(ValidationPatterns.LettersAndDigits, ErrorMessage = "Street can only contain letters, numbers, and spaces")]
         public string Street { get; set; } = default!;
+
+        public IFormFile? Photo { get; set; }
 
         public HealthRecordCreateViewModel HealthRecord { get; set; } = new();
 

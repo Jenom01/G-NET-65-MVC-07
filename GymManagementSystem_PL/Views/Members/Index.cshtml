@@ -32,9 +32,10 @@
                     <tr>
                         <td>
                             <span class="avatar">
-                                <img src="@(string.IsNullOrWhiteSpace(member.PhotoUrl) ? Url.Content("~/images/User.png") : member.PhotoUrl)"
+                                <img src="@(member.HasPhoto ? Url.Action("Picture", "Members", new { id = member.Id }) : Url.Content("~/images/User.png"))"
                                         alt="@member.Name" class="rounded-circle"
-                                        style="width: 40px; height: 40px;" />
+                                        style="width: 40px; height: 40px;" 
+                                     onerror="this.onerror=null; this.src='@Url.Content("~/images/User.png")'" />
                             </span>
                         </td>
                         <td><span>@member.Name</span></td>

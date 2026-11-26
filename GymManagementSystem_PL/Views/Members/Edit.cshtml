@@ -9,15 +9,16 @@
             <div class="card card-details border-0 p-2 shadow">
                 <div class="card-body text-center">
                     <div class="text-center mt-3">
-                        <img src="@(string.IsNullOrWhiteSpace(Model.PhotoUrl) ? Url.Content("~/images/User.png") : Model.PhotoUrl)" alt="@Model.Name" class="rounded-circle"
-                             style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff; margin-top: -60px;" />
+                        <img src="@(Model.HasPhoto ? Url.Action("Picture", "Members", new { id = Model.Id }) : Url.Content("~/images/User.png"))" alt="@Model.Name" class="rounded-circle"
+                             style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff; margin-top: -60px;" 
+                             onerror="this.onerror=null; this.src='@Url.Content("~/images/User.png")'" />
                     </div>
                     <div class="card-body text-center">
                         <h2 class="mb-1 text-primary-color">@Model.Name</h2>
-                        <form asp-controller="Members" asp-action="Edit" method="post">
+                        <form asp-controller="Members" asp-action="Edit" asp-route-id="@Model.Id" method="post">
                             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                             <input type="hidden" asp-for="Name"/>
-                            <input type="hidden" asp-for="PhotoUrl" />
+                            <input type="hidden" asp-for="HasPhoto" />
                             <div class="mt-4 text-start">
                                 <div class="row g-3">
                                     <div class="col-12">
