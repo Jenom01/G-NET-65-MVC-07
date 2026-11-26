@@ -1,9 +1,16 @@
-﻿namespace GymManagementSystem_DAL.Data.Seed
+﻿using GymManagementSystem_DAL.Data.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+
+namespace GymManagementSystem_DAL.Data.Seed
 {
     public static class DatabaseSeeder
     {
-        public static async Task SeedAllAsync(GymDbContext dbContext)
+        public static async Task SeedAllAsync(UserManager<GymUser> userManager,
+            RoleManager<GymRole> roleManager, IConfiguration config, GymDbContext dbContext)
         {
+            await IdentitySeeder.SeedAsync(userManager, roleManager, config);
+
             await PlanSeeder.SeedAsync(dbContext);
             await CategorySeeder.SeedAsync(dbContext);
             await MemberSeeder.SeedAsync(dbContext);

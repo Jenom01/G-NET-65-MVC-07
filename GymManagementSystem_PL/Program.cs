@@ -2,8 +2,10 @@ using AutoMapper;
 using GymManagementSystem_BLL;
 using GymManagementSystem_DAL;
 using GymManagementSystem_DAL.Data;
+using GymManagementSystem_DAL.Data.Identity;
 using GymManagementSystem_DAL.Data.Seed;
 using GymManagementSystem_PL.Logging;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Debugging;
@@ -47,14 +49,22 @@ try
         .AddGymDataAccess(builder.Configuration)
         .AddGymBusinessServices();
 
+    builder.Services.AddIdentity<GymUser, GymRole>(config =>
+    {
+
+    }).AddEntityFrameworkStores<GymDbContext>()
+    .AddDefaultTokenProviders();
+
     var app = builder.Build();
 
     if (app.Environment.IsDevelopment())
     {
         await using var scope = app.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<GymUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<GymRole>>();
         await dbContext.Database.MigrateAsync();
-        await DatabaseSeeder.SeedAllAsync(dbContext);
+        await DatabaseSeeder.SeedAllAsync(userManager, roleManager, app.Configuration, dbContext);
         scope.ServiceProvider.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
     }
 

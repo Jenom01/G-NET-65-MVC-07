@@ -1,11 +1,13 @@
-﻿using GymManagementSystem_DAL.Models;
+﻿using GymManagementSystem_DAL.Data.Identity;
+using GymManagementSystem_DAL.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace GymManagementSystem_DAL.Data
 {
-    public class GymDbContext : DbContext
+    public class GymDbContext : IdentityDbContext<GymUser, GymRole, Guid>
     {
         public GymDbContext(DbContextOptions<GymDbContext> options) : base(options)
         {
@@ -13,6 +15,8 @@ namespace GymManagementSystem_DAL.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
@@ -29,7 +33,7 @@ namespace GymManagementSystem_DAL.Data
 
         public DbSet<Plan> Plans => Set<Plan>();
         public DbSet<Category> Categories => Set<Category>();
-        public DbSet<User> Users => Set<User>();
+        public DbSet<User> GymUsers => Set<User>();
         public DbSet<Member> Members => Set<Member>();
         public DbSet<Trainer> Trainers => Set<Trainer>();
         public DbSet<HealthRecord> HealthRecords => Set<HealthRecord>();
