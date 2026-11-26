@@ -19,6 +19,14 @@ namespace GymManagementSystem_DAL.Data
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+            modelBuilder.Entity<GymUser>().Property(user => user.FullName)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            modelBuilder.Entity<GymRole>().Property(role => role.DisplayName)
+                .HasMaxLength(100)
+                .IsRequired();
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
                 .Where(t => t.BaseType == null &&
                             typeof(BaseEntity).IsAssignableFrom(t.ClrType)))

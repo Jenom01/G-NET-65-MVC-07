@@ -49,27 +49,48 @@ try
         .AddGymDataAccess(builder.Configuration)
         .AddGymBusinessServices();
 
-    builder.Services.AddIdentity<GymUser, GymRole>(config =>
+    builder.Services.AddIdentity<GymUser, GymRole>(options =>
     {
+        options.User.RequireUniqueEmail = true;
 
-    }).AddEntityFrameworkStores<GymDbContext>()
-    .AddDefaultTokenProviders();
+        options.Password.RequiredLength = 8;
+        options.Password.RequireDigit = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+
+        options.Lockout.AllowedForNewUsers = true;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    })
+        .AddEntityFrameworkStores<GymDbContext>()
+        .AddDefaultTokenProviders();
+
+    builder.Services.AddAuthorization();
 
     var app = builder.Build();
 
     if (app.Environment.IsDevelopment())
     {
         await using var scope = app.Services.CreateAsyncScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<GymUser>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<GymRole>>();
+
+        var services = scope.ServiceProvider;
+        var dbContext = services.GetRequiredService<GymDbContext>();
+        var userManager = services.GetRequiredService<UserManager<GymUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<GymRole>>();
+
         await dbContext.Database.MigrateAsync();
+
         await DatabaseSeeder.SeedAllAsync(userManager, roleManager, app.Configuration, dbContext);
-        scope.ServiceProvider.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
+
+        services.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
     }
 
     app.UseSerilogRequestLogging();
     app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
     app.MapStaticAssets();
 
     app.MapControllerRoute(

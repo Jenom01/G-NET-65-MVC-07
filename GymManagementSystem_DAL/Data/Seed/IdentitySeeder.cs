@@ -7,89 +7,92 @@ namespace GymManagementSystem_DAL.Data.Seed
     public static class IdentitySeeder
     {
         public static async Task SeedAsync(UserManager<GymUser> userManager,
-            RoleManager<GymRole> roleManager, IConfiguration config)
+            RoleManager<GymRole> roleManager, IConfiguration configuration)
         {
-            if (!await roleManager.RoleExistsAsync(IdentityRoleNames.SuperAdmin))
+            ArgumentNullException.ThrowIfNull(userManager);
+            ArgumentNullException.ThrowIfNull(roleManager);
+            ArgumentNullException.ThrowIfNull(configuration);
+
+            await EnsureRoleAsync(roleManager, IdentityRoleNames.SuperAdmin, "Super Admin");
+            await EnsureRoleAsync(roleManager, IdentityRoleNames.Admin, "Admin");
+
+            var superAdminEmail = GetRequiredSetting(configuration, "IdentitySeed:SuperAdminEmail");
+            var superAdminPassword = GetRequiredSetting(configuration, "IdentitySeed:SuperAdminPassword");
+
+            var adminEmail = GetRequiredSetting(configuration, "IdentitySeed:AdminEmail");
+            var adminPassword = GetRequiredSetting(configuration, "IdentitySeed:AdminPassword");
+
+            var superAdmin = await EnsureUserAsync(userManager, superAdminEmail, superAdminPassword, "Super Administrator");
+            var admin = await EnsureUserAsync(userManager, adminEmail, adminPassword, "Administrator");
+
+            await EnsureUserInRoleAsync(userManager, superAdmin, IdentityRoleNames.SuperAdmin);
+            await EnsureUserInRoleAsync(userManager, admin, IdentityRoleNames.Admin);
+        }
+
+        private static string GetRequiredSetting(IConfiguration configuration, string key)
+        {
+            var value = configuration[key];
+
+            if (string.IsNullOrWhiteSpace(value))
+                throw new InvalidOperationException(
+                    $"Required configuration value '{key}' is missing or empty.");
+
+            return value;
+        }
+
+        private static async Task EnsureRoleAsync(RoleManager<GymRole> roleManager,
+            string roleName, string displayName)
+        {
+            if (await roleManager.RoleExistsAsync(roleName)) return;
+
+            var role = new GymRole
             {
-                var result = await roleManager.CreateAsync(new GymRole
-                {
-                    Name = IdentityRoleNames.SuperAdmin,
-                    DisplayName = "Super Admin"
-                });
+                Name = roleName,
+                DisplayName = displayName
+            };
 
-                if (!result.Succeeded)
-                    throw new InvalidOperationException("Failed to create role");
-            }
+            var result = await roleManager.CreateAsync(role);
+            EnsureSucceeded(result, $"create role '{roleName}'");
+        }
 
-            if (!await roleManager.RoleExistsAsync(IdentityRoleNames.Admin))
+        private static async Task<GymUser> EnsureUserAsync(UserManager<GymUser> userManager,
+            string email, string password, string fullName)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user is not null) return user;
+
+            user = new GymUser
             {
-                var result = await roleManager.CreateAsync(new GymRole
-                {
-                    Name = IdentityRoleNames.Admin,
-                    DisplayName = "Admin"
-                });
+                UserName = email,
+                Email = email,
+                FullName = fullName,
+                EmailConfirmed = true
+            };
 
-                if (!result.Succeeded)
-                    throw new InvalidOperationException("Failed to create role");
-            }
+            var result = await userManager.CreateAsync(user, password);
+            EnsureSucceeded(result, $"create user '{email}'");
 
-            var superAdminEmail = config["IdentitySeed:SuperAdminEmail"] ?? throw new InvalidOperationException();
-            var superAdminPassword = config["IdentitySeed:SuperAdminPassword"] ?? throw new InvalidOperationException();
+            return user;
+        }
 
-            var AdminEmail = config["IdentitySeed:AdminEmail"] ?? throw new InvalidOperationException();
-            var AdminPassword = config["IdentitySeed:AdminPassword"] ?? throw new InvalidOperationException();
+        private static async Task EnsureUserInRoleAsync(UserManager<GymUser> userManager,
+            GymUser user, string roleName)
+        {
+            if (await userManager.IsInRoleAsync(user, roleName)) return;
 
-            var superAdmin = await userManager.FindByEmailAsync(superAdminEmail);
+            var result = await userManager.AddToRoleAsync(user, roleName);
+            EnsureSucceeded(result, $"assign role '{roleName}' to user '{user.Email}'");
+        }
 
-            if (superAdmin is null)
-            {
-                superAdmin = new GymUser
-                {
-                    UserName = superAdminEmail,
-                    Email = superAdminEmail,
-                    FullName = "Super Administrator",
-                    EmailConfirmed = true
-                };
+        private static void EnsureSucceeded(IdentityResult result, string operation)
+        {
+            if (result.Succeeded) return;
 
-                var result = await userManager.CreateAsync(superAdmin, superAdminPassword);
+            var errors = string.Join("; ",
+                result.Errors.Select(error => $"{error.Code}: {error.Description}"));
 
-                if (!result.Succeeded)
-                    throw new InvalidOperationException("Failed to create user");
-            }
-
-            var Admin = await userManager.FindByEmailAsync(AdminEmail);
-
-            if (Admin is null)
-            {
-                Admin = new GymUser
-                {
-                    UserName = AdminEmail,
-                    Email = AdminEmail,
-                    FullName = "Administrator",
-                    EmailConfirmed = true
-                };
-
-                var result = await userManager.CreateAsync(Admin, AdminPassword);
-
-                if (!result.Succeeded)
-                    throw new InvalidOperationException("Failed to create user");
-            }
-
-            if (!await userManager.IsInRoleAsync(superAdmin, IdentityRoleNames.SuperAdmin))
-            {
-                var result = await userManager.AddToRoleAsync(superAdmin, IdentityRoleNames.SuperAdmin);
-
-                if (!result.Succeeded)
-                    throw new InvalidOperationException("Failed to add user to role");
-            }
-
-            if (!await userManager.IsInRoleAsync(Admin, IdentityRoleNames.Admin))
-            {
-                var result = await userManager.AddToRoleAsync(Admin, IdentityRoleNames.Admin);
-
-                if (!result.Succeeded)
-                    throw new InvalidOperationException("Failed to add user to role");
-            }
+            throw new InvalidOperationException($"Could not {operation}. Identity errors: {errors}");
         }
     }
 }

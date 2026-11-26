@@ -16,7 +16,7 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261126134032_AddIdentityTables";
+    public override string LastMigrationId => "20261126163826_ModifyIdentitySeeder";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -39,7 +39,8 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("DisplayName")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<string>("Name")
                     .HasMaxLength(256)
@@ -81,7 +82,8 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("FullName")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
                 b.Property<bool>("LockoutEnabled")
                     .HasColumnType("bit");
