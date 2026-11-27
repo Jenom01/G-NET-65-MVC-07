@@ -16,7 +16,6 @@ namespace GymManagementSystem_PL.Controllers
             => View(new TrainerCreateViewModel());
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TrainerCreateViewModel model, CancellationToken ct)
         {
             if (!ModelState.IsValid) return View(model);
@@ -50,7 +49,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, TrainerEditViewModel model, CancellationToken ct)
         {
             if (!ModelState.IsValid) return View(model);
@@ -78,7 +76,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken ct)
         {

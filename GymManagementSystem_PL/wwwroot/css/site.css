@@ -29,3 +29,9 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.workout-img {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    height: auto;
+}

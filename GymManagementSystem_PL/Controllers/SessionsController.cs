@@ -26,7 +26,6 @@ namespace GymManagementSystem_PL.Controllers
             => await CreateFormAsync(new SessionCreateViewModel(), ct);
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SessionCreateViewModel model, CancellationToken ct)
         {
             if (!ModelState.IsValid) return await CreateFormAsync(model, ct);
@@ -48,7 +47,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, SessionEditViewModel model, CancellationToken ct)
         {
             model.Id = id;
@@ -74,7 +72,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken ct)
             => await sessions.DeleteAsync(id, ct) switch

@@ -29,11 +29,14 @@
                            aria-current="@(Active("Home") == "active" ? "page" : null)"
                            asp-controller="Home" asp-action="Index">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link @Active("Members") px-3 py-2 mx-2 fw-bolder fs-5"
-                           aria-current="@(Active("Members") == "active" ? "page" : null)"
-                           asp-controller="Members" asp-action="Index">Members</a>
-                    </li>
+                    @if (User.IsInRole(RoleNames.SuperAdmin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Members") px-3 py-2 mx-2 fw-bolder fs-5"
+                               aria-current="@(Active("Members") == "active" ? "page" : null)"
+                               asp-controller="Members" asp-action="Index">Members</a>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a class="nav-link @Active("Trainers") px-3 py-2 mx-2 fw-bolder fs-5"
                            aria-current="@(Active("Trainers") == "active" ? "page" : null)"
@@ -59,14 +62,24 @@
                            aria-current="@(Active("Bookings") == "active" ? "page" : null)"
                            asp-controller="Bookings" asp-action="Index">Sessions Schedule</a>
                     </li>
-                    <li class="nav-item">
-                        <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
-                            <button type="submit"
-                                    class="btn btn-link nav-link px-3 py-2 mx-2 fw-bolder fs-5 text-black-alternative">
-                                Logout
-                            </button>
-                        </form>
-                    </li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+                                <button type="submit"
+                                        class="btn btn-link nav-link px-3 py-2 mx-2 fw-bolder fs-5 text-black-alternative">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Account") px-3 py-2 mx-2 fw-bolder fs-5"
+                               asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

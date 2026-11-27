@@ -3,11 +3,14 @@ using GymManagementSystem_BLL.Results;
 using GymManagementSystem_BLL.Services;
 using GymManagementSystem_BLL.ViewModels.HealthRecords;
 using GymManagementSystem_BLL.ViewModels.Members;
+using GymManagementSystem_DAL.Data.Identity;
 using GymManagementSystem_PL.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystem_PL.Controllers
 {
+    [Authorize(Roles = RoleNames.SuperAdmin)]
     public class MembersController(IMemberService members) : Controller
     {
         public async Task<IActionResult> Index(CancellationToken ct)
@@ -18,7 +21,6 @@ namespace GymManagementSystem_PL.Controllers
             => View(new MemberCreateViewModel());
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MemberCreateViewModel model, CancellationToken ct)
         {
             if (!ModelState.IsValid) return View(model);
@@ -69,7 +71,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, MemberEditViewModel model, CancellationToken ct)
         {
             model.Id = id;
@@ -99,7 +100,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken ct)
         {

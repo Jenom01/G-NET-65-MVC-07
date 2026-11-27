@@ -1,0 +1,47 @@
+﻿@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gym-info-section::before,
+    .gym-icon,
+    .btn-login.loading::after {
+        animation: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        grid-template-columns: 1fr;
+    }
+
+    .gym-info-section {
+        display: none;
+    }
+
+    .login-form-section {
+        padding: 40px 28px;
+    }
+}

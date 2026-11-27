@@ -28,7 +28,6 @@ namespace GymManagementSystem_PL.Controllers
             };
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, PlanEditViewModel model, CancellationToken ct)
         {
             if (!ModelState.IsValid) return View(model);
@@ -48,7 +47,6 @@ namespace GymManagementSystem_PL.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Activate(int id, CancellationToken ct)
         {
             var result = await plans.ToggleStatusAsync(id, ct);

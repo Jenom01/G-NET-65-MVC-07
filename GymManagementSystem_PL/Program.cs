@@ -2,6 +2,7 @@ using GymManagementSystem_BLL;
 using GymManagementSystem_DAL;
 using GymManagementSystem_PL.Extensions;
 using GymManagementSystem_PL.Logging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -48,7 +49,8 @@ try
         .AddGymBusinessServices()
         .AddGymIdentity(builder.Environment);
 
-    builder.Services.AddAuthorization();
+    builder.Services.AddAuthorizationBuilder()
+        .SetFallbackPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
 
     var app = builder.Build();
 
@@ -63,12 +65,15 @@ try
     }
 
     app.UseSerilogRequestLogging();
+
     app.UseHttpsRedirection();
+
     app.UseRouting();
+
     app.UseAuthentication();
     app.UseAuthorization();
 
-    app.MapStaticAssets();
+    app.MapStaticAssets().AllowAnonymous();
 
     app.MapControllerRoute(
         name: "default",
