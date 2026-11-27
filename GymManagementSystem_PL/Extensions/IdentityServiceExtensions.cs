@@ -8,7 +8,7 @@ namespace GymManagementSystem_PL.Extensions
     public static class IdentityServiceExtensions
     {
         public static IServiceCollection AddGymIdentity(this IServiceCollection services,
-            IConfiguration configuration, IHostEnvironment environment)
+            IHostEnvironment environment)
         {
             services.AddIdentity<GymUser, GymRole>(options =>
             {
@@ -42,7 +42,7 @@ namespace GymManagementSystem_PL.Extensions
 
             // Validated when first read (only the seeder reads it), so production doesn't need these keys
             services.AddOptions<IdentitySeedOptions>()
-                .Bind(configuration.GetSection(IdentitySeedOptions.SectionName))
+                .BindConfiguration(IdentitySeedOptions.SectionName)
                 .ValidateDataAnnotations();
 
             return services;

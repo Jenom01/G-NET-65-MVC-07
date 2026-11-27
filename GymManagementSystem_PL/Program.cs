@@ -46,7 +46,7 @@ try
     builder.Services
         .AddGymDataAccess(builder.Configuration)
         .AddGymBusinessServices()
-        .AddGymIdentity(builder.Configuration, builder.Environment);
+        .AddGymIdentity(builder.Environment);
 
     builder.Services.AddAuthorization();
 
