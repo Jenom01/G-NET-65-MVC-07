@@ -16,7 +16,7 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261126163826_ModifyIdentitySeeder";
+    public override string LastMigrationId => "20261127100139_RenameUsersTableToPeople";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -311,6 +311,80 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
                     });
             });
 
+        modelBuilder.Entity("GymManagementSystem_DAL.Models.Person", b =>
+            {
+                var id = b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(id);
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime2");
+
+                b.Property<DateOnly>("DateOfBirth")
+                    .HasColumnType("date");
+
+                b.Property<DateTime?>("DeletedAt")
+                    .HasColumnType("datetime2");
+
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnType("varchar(100)");
+
+                b.Property<string>("Gender")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("nvarchar(20)");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("bit");
+
+                b.Property<DateTime?>("LastUpdatedAt")
+                    .HasColumnType("datetime2");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
+
+                b.Property<string>("PersonType")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("nvarchar(20)");
+
+                b.Property<string>("Phone")
+                    .IsRequired()
+                    .HasMaxLength(11)
+                    .IsUnicode(false)
+                    .HasColumnType("varchar(11)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Email")
+                    .IsUnique()
+                    .HasFilter("[IsDeleted] = 0");
+
+                b.HasIndex("Phone")
+                    .IsUnique()
+                    .HasFilter("[IsDeleted] = 0");
+
+                b.ToTable("People", t =>
+                    {
+                        t.HasCheckConstraint("CK_People_Email", "[Email] LIKE '_%@_%._%'");
+
+                        t.HasCheckConstraint("CK_People_Phone", "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'");
+
+                        t.HasCheckConstraint("CK_People_Trainer_Speciality", "[PersonType] <> 'Trainer' OR [Speciality] IS NOT NULL");
+                    });
+
+                b.HasDiscriminator<string>("PersonType").HasValue("Person");
+
+                b.UseTphMappingStrategy();
+            });
+
         modelBuilder.Entity("GymManagementSystem_DAL.Models.Plan", b =>
             {
                 var id = b.Property<int>("Id")
@@ -421,80 +495,6 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
                     });
             });
 
-        modelBuilder.Entity("GymManagementSystem_DAL.Models.User", b =>
-            {
-                var id = b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
-
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(id);
-
-                b.Property<DateTime>("CreatedAt")
-                    .HasColumnType("datetime2");
-
-                b.Property<DateOnly>("DateOfBirth")
-                    .HasColumnType("date");
-
-                b.Property<DateTime?>("DeletedAt")
-                    .HasColumnType("datetime2");
-
-                b.Property<string>("Email")
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnType("varchar(100)");
-
-                b.Property<string>("Gender")
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .HasColumnType("nvarchar(20)");
-
-                b.Property<bool>("IsDeleted")
-                    .HasColumnType("bit");
-
-                b.Property<DateTime?>("LastUpdatedAt")
-                    .HasColumnType("datetime2");
-
-                b.Property<string>("Name")
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .HasColumnType("nvarchar(50)");
-
-                b.Property<string>("Phone")
-                    .IsRequired()
-                    .HasMaxLength(11)
-                    .IsUnicode(false)
-                    .HasColumnType("varchar(11)");
-
-                b.Property<string>("UserType")
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .HasColumnType("nvarchar(20)");
-
-                b.HasKey("Id");
-
-                b.HasIndex("Email")
-                    .IsUnique()
-                    .HasFilter("[IsDeleted] = 0");
-
-                b.HasIndex("Phone")
-                    .IsUnique()
-                    .HasFilter("[IsDeleted] = 0");
-
-                b.ToTable("GymUsers", t =>
-                    {
-                        t.HasCheckConstraint("CK_Users_Email", "[Email] LIKE '_%@_%._%'");
-
-                        t.HasCheckConstraint("CK_Users_Phone", "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'");
-
-                        t.HasCheckConstraint("CK_Users_Trainer_Speciality", "[UserType] <> 'Trainer' OR [Speciality] IS NOT NULL");
-                    });
-
-                b.HasDiscriminator<string>("UserType").HasValue("User");
-
-                b.UseTphMappingStrategy();
-            });
-
         modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
             {
                 var id = b.Property<int>("Id")
@@ -600,7 +600,7 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
 
         modelBuilder.Entity("GymManagementSystem_DAL.Models.Member", b =>
             {
-                b.HasBaseType("GymManagementSystem_DAL.Models.User");
+                b.HasBaseType("GymManagementSystem_DAL.Models.Person");
 
                 b.Property<DateTime?>("JoinDate")
                     .HasColumnType("datetime2");
@@ -611,11 +611,11 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
 
                 b.ToTable(t =>
                     {
-                        t.HasCheckConstraint("CK_Users_Email", "[Email] LIKE '_%@_%._%'");
+                        t.HasCheckConstraint("CK_People_Email", "[Email] LIKE '_%@_%._%'");
 
-                        t.HasCheckConstraint("CK_Users_Phone", "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'");
+                        t.HasCheckConstraint("CK_People_Phone", "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'");
 
-                        t.HasCheckConstraint("CK_Users_Trainer_Speciality", "[UserType] <> 'Trainer' OR [Speciality] IS NOT NULL");
+                        t.HasCheckConstraint("CK_People_Trainer_Speciality", "[PersonType] <> 'Trainer' OR [Speciality] IS NOT NULL");
                     });
 
                 b.HasDiscriminator().HasValue("Member");
@@ -623,7 +623,7 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
 
         modelBuilder.Entity("GymManagementSystem_DAL.Models.Trainer", b =>
             {
-                b.HasBaseType("GymManagementSystem_DAL.Models.User");
+                b.HasBaseType("GymManagementSystem_DAL.Models.Person");
 
                 b.Property<DateTime?>("HireDate")
                     .HasColumnType("datetime2");
@@ -635,11 +635,11 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
 
                 b.ToTable(t =>
                     {
-                        t.HasCheckConstraint("CK_Users_Email", "[Email] LIKE '_%@_%._%'");
+                        t.HasCheckConstraint("CK_People_Email", "[Email] LIKE '_%@_%._%'");
 
-                        t.HasCheckConstraint("CK_Users_Phone", "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'");
+                        t.HasCheckConstraint("CK_People_Phone", "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'");
 
-                        t.HasCheckConstraint("CK_Users_Trainer_Speciality", "[UserType] <> 'Trainer' OR [Speciality] IS NOT NULL");
+                        t.HasCheckConstraint("CK_People_Trainer_Speciality", "[PersonType] <> 'Trainer' OR [Speciality] IS NOT NULL");
                     });
 
                 b.HasDiscriminator().HasValue("Trainer");
@@ -694,30 +694,11 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
                 b.Navigation("Plan");
             });
 
-        modelBuilder.Entity("GymManagementSystem_DAL.Models.Session", b =>
-            {
-                b.HasOne("GymManagementSystem_DAL.Models.Category", "Category")
-                    .WithMany("Sessions")
-                    .HasForeignKey("CategoryId")
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .IsRequired();
-
-                b.HasOne("GymManagementSystem_DAL.Models.Trainer", "Trainer")
-                    .WithMany("Sessions")
-                    .HasForeignKey("TrainerId")
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .IsRequired();
-
-                b.Navigation("Category");
-
-                b.Navigation("Trainer");
-            });
-
-        modelBuilder.Entity("GymManagementSystem_DAL.Models.User", b =>
+        modelBuilder.Entity("GymManagementSystem_DAL.Models.Person", b =>
             {
                 b.OwnsOne("GymManagementSystem_DAL.Models.ValueObjects.Address", "Address", b1 =>
                     {
-                        b1.Property<int>("UserId")
+                        b1.Property<int>("PersonId")
                             .HasColumnType("int");
 
                         b1.Property<int>("BuildingNumber")
@@ -736,16 +717,35 @@ partial class GymDbContextModelSnapshot : ModelSnapshot
                             .HasColumnType("nvarchar(30)")
                             .HasColumnName("Street");
 
-                        b1.HasKey("UserId");
+                        b1.HasKey("PersonId");
 
-                        b1.ToTable("GymUsers");
+                        b1.ToTable("People");
 
                         b1.WithOwner()
-                            .HasForeignKey("UserId");
+                            .HasForeignKey("PersonId");
                     });
 
                 b.Navigation("Address")
                     .IsRequired();
+            });
+
+        modelBuilder.Entity("GymManagementSystem_DAL.Models.Session", b =>
+            {
+                b.HasOne("GymManagementSystem_DAL.Models.Category", "Category")
+                    .WithMany("Sessions")
+                    .HasForeignKey("CategoryId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
+
+                b.HasOne("GymManagementSystem_DAL.Models.Trainer", "Trainer")
+                    .WithMany("Sessions")
+                    .HasForeignKey("TrainerId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
+
+                b.Navigation("Category");
+
+                b.Navigation("Trainer");
             });
 
         modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

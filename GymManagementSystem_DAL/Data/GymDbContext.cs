@@ -13,20 +13,27 @@ namespace GymManagementSystem_DAL.Data
         {
         }
 
+        public DbSet<Plan> Plans => Set<Plan>();
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Person> People => Set<Person>();
+        public DbSet<Member> Members => Set<Member>();
+        public DbSet<Trainer> Trainers => Set<Trainer>();
+        public DbSet<HealthRecord> HealthRecords => Set<HealthRecord>();
+        public DbSet<Session> Sessions => Set<Session>();
+        public DbSet<Membership> Memberships => Set<Membership>();
+        public DbSet<Booking> Bookings => Set<Booking>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<GymUser>().Property(user => user.FullName)
-                .HasMaxLength(200)
-                .IsRequired();
+            ApplySoftDeleteFilters(modelBuilder);
+        }
 
-            modelBuilder.Entity<GymRole>().Property(role => role.DisplayName)
-                .HasMaxLength(100)
-                .IsRequired();
-
+        private static void ApplySoftDeleteFilters(ModelBuilder modelBuilder)
+        {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
                 .Where(t => t.BaseType == null &&
                             typeof(BaseEntity).IsAssignableFrom(t.ClrType)))
@@ -38,15 +45,5 @@ namespace GymManagementSystem_DAL.Data
                 entityType.SetQueryFilter(filter);
             }
         }
-
-        public DbSet<Plan> Plans => Set<Plan>();
-        public DbSet<Category> Categories => Set<Category>();
-        public DbSet<User> GymUsers => Set<User>();
-        public DbSet<Member> Members => Set<Member>();
-        public DbSet<Trainer> Trainers => Set<Trainer>();
-        public DbSet<HealthRecord> HealthRecords => Set<HealthRecord>();
-        public DbSet<Session> Sessions => Set<Session>();
-        public DbSet<Membership> Memberships => Set<Membership>();
-        public DbSet<Booking> Bookings => Set<Booking>();
     }
 }

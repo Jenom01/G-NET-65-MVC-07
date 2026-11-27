@@ -1,15 +1,24 @@
 ﻿using GymManagementSystem_DAL.Data.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace GymManagementSystem_DAL.Data.Seed
 {
     public static class DatabaseSeeder
     {
-        public static async Task SeedAllAsync(UserManager<GymUser> userManager,
-            RoleManager<GymRole> roleManager, IConfiguration config, GymDbContext dbContext)
+        public static async Task SeedAsync(IServiceProvider services)
         {
-            await IdentitySeeder.SeedAsync(userManager, roleManager, config);
+            ArgumentNullException.ThrowIfNull(services);
+
+            var dbContext = services.GetRequiredService<GymDbContext>();
+
+            var identityOptions = services.GetRequiredService<IOptions<IdentitySeedOptions>>().Value;
+
+            await IdentitySeeder.SeedAsync(
+                services.GetRequiredService<UserManager<GymUser>>(),
+                services.GetRequiredService<RoleManager<GymRole>>(),
+                identityOptions);
 
             await PlanSeeder.SeedAsync(dbContext);
             await CategorySeeder.SeedAsync(dbContext);

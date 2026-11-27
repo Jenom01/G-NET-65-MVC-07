@@ -2,7 +2,7 @@
 
 namespace GymManagementSystem_DAL.Repositories
 {
-    public interface IMemberRepository : IUserRepository<Member>
+    public interface IMemberRepository : IPersonRepository<Member>
     {
         Task<Member?> GetDetailsAsync(int id, CancellationToken ct = default);
         Task<bool> HasActiveBookingsAsync(int id, CancellationToken ct = default);

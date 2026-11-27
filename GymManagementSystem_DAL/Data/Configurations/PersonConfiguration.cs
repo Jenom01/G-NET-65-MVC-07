@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GymManagementSystem_DAL.Data.Configurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class PersonConfiguration : IEntityTypeConfiguration<Person>
     {
-        public virtual void Configure(EntityTypeBuilder<User> builder)
+        public virtual void Configure(EntityTypeBuilder<Person> builder)
         {
+            builder.ToTable("People");
+
             builder.Property(u => u.Name)
                 .HasMaxLength(50);
 
@@ -24,11 +26,11 @@ namespace GymManagementSystem_DAL.Data.Configurations
                 .HasConversion<string>()
                 .HasMaxLength(20);
 
-            builder.HasDiscriminator<string>("UserType")
+            builder.HasDiscriminator<string>("PersonType")
                 .HasValue<Member>("Member")
                 .HasValue<Trainer>("Trainer");
 
-            builder.Property("UserType")
+            builder.Property("PersonType")
                 .HasMaxLength(20);
 
             builder.OwnsOne(u => u.Address, t =>
@@ -56,18 +58,18 @@ namespace GymManagementSystem_DAL.Data.Configurations
             builder.ToTable(t =>
             {
                 t.HasCheckConstraint(
-                    "CK_Users_Phone",
+                    "CK_People_Phone",
                     "LEN([Phone]) = 11 AND [Phone] LIKE '01[0125]%' AND [Phone] NOT LIKE '%[^0-9]%'"
                 );
 
                 t.HasCheckConstraint(
-                    "CK_Users_Email",
+                    "CK_People_Email",
                     "[Email] LIKE '_%@_%._%'"
                 );
 
                 t.HasCheckConstraint(
-                    "CK_Users_Trainer_Speciality",
-                    "[UserType] <> 'Trainer' OR [Speciality] IS NOT NULL"
+                    "CK_People_Trainer_Speciality",
+                    "[PersonType] <> 'Trainer' OR [Speciality] IS NOT NULL"
                 );
             });
         }

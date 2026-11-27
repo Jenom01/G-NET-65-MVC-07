@@ -1,6 +1,6 @@
-﻿namespace GymManagementSystem_DAL.Data.Seed
+﻿namespace GymManagementSystem_DAL.Data.Identity
 {
-    public static class IdentityRoleNames
+    public static class RoleNames
     {
         public const string SuperAdmin = "SuperAdmin";
         public const string Admin = "Admin";

@@ -3,7 +3,7 @@ using GymManagementSystem_DAL.Models.ValueObjects;
 
 namespace GymManagementSystem_DAL.Models
 {
-    public abstract class User : BaseEntity
+    public abstract class Person : BaseEntity
     {
         public string Name { get; set; } = default!;
         public string Email { get; set; } = default!;

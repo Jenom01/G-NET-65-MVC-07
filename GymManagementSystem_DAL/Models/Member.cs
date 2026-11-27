@@ -1,6 +1,6 @@
 ﻿namespace GymManagementSystem_DAL.Models
 {
-    public class Member : User
+    public class Member : Person
     {
         public string? Photo { get; set; }
         public DateTime? JoinDate { get; set; }

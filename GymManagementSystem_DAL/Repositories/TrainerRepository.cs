@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagementSystem_DAL.Repositories
 {
-    public class TrainerRepository(GymDbContext dbContext) : UserRepository<Trainer>(dbContext),
+    public class TrainerRepository(GymDbContext dbContext) : PersonRepository<Trainer>(dbContext),
         ITrainerRepository
     {
         public async Task<bool> HasActiveSessionsAsync(int id, CancellationToken ct = default)

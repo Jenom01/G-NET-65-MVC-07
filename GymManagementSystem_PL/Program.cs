@@ -1,11 +1,8 @@
-using AutoMapper;
 using GymManagementSystem_BLL;
 using GymManagementSystem_DAL;
-using GymManagementSystem_DAL.Data;
-using GymManagementSystem_DAL.Data.Identity;
-using GymManagementSystem_DAL.Data.Seed;
+using GymManagementSystem_PL.Extensions;
 using GymManagementSystem_PL.Logging;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Debugging;
@@ -43,28 +40,13 @@ try
     });
 
     // Add services to the container.
-    builder.Services.AddControllersWithViews();
+    builder.Services.AddControllersWithViews(options =>
+        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
     builder.Services
         .AddGymDataAccess(builder.Configuration)
-        .AddGymBusinessServices();
-
-    builder.Services.AddIdentity<GymUser, GymRole>(options =>
-    {
-        options.User.RequireUniqueEmail = true;
-
-        options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireNonAlphanumeric = true;
-
-        options.Lockout.AllowedForNewUsers = true;
-        options.Lockout.MaxFailedAccessAttempts = 5;
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-    })
-        .AddEntityFrameworkStores<GymDbContext>()
-        .AddDefaultTokenProviders();
+        .AddGymBusinessServices()
+        .AddGymIdentity(builder.Configuration, builder.Environment);
 
     builder.Services.AddAuthorization();
 
@@ -72,21 +54,16 @@ try
 
     if (app.Environment.IsDevelopment())
     {
-        await using var scope = app.Services.CreateAsyncScope();
-
-        var services = scope.ServiceProvider;
-        var dbContext = services.GetRequiredService<GymDbContext>();
-        var userManager = services.GetRequiredService<UserManager<GymUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<GymRole>>();
-
-        await dbContext.Database.MigrateAsync();
-
-        await DatabaseSeeder.SeedAllAsync(userManager, roleManager, app.Configuration, dbContext);
-
-        services.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
+        await app.MigrateAndSeedAsync();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
     }
 
     app.UseSerilogRequestLogging();
+    app.UseHttpsRedirection();
     app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();

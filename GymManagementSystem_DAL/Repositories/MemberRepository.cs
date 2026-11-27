@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagementSystem_DAL.Repositories
 {
-    public class MemberRepository(GymDbContext dbContext) : UserRepository<Member>(dbContext),
+    public class MemberRepository(GymDbContext dbContext) : PersonRepository<Member>(dbContext),
         IMemberRepository
     {
         public async Task<Member?> GetDetailsAsync(int id, CancellationToken ct = default)

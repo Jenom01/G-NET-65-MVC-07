@@ -1,43 +1,27 @@
 ﻿using GymManagementSystem_DAL.Data.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 
 namespace GymManagementSystem_DAL.Data.Seed
 {
     public static class IdentitySeeder
     {
         public static async Task SeedAsync(UserManager<GymUser> userManager,
-            RoleManager<GymRole> roleManager, IConfiguration configuration)
+            RoleManager<GymRole> roleManager, IdentitySeedOptions options)
         {
             ArgumentNullException.ThrowIfNull(userManager);
             ArgumentNullException.ThrowIfNull(roleManager);
-            ArgumentNullException.ThrowIfNull(configuration);
+            ArgumentNullException.ThrowIfNull(options);
 
-            await EnsureRoleAsync(roleManager, IdentityRoleNames.SuperAdmin, "Super Admin");
-            await EnsureRoleAsync(roleManager, IdentityRoleNames.Admin, "Admin");
+            await EnsureRoleAsync(roleManager, RoleNames.SuperAdmin, "Super Admin");
+            await EnsureRoleAsync(roleManager, RoleNames.Admin, "Admin");
 
-            var superAdminEmail = GetRequiredSetting(configuration, "IdentitySeed:SuperAdminEmail");
-            var superAdminPassword = GetRequiredSetting(configuration, "IdentitySeed:SuperAdminPassword");
+            var superAdmin = await EnsureUserAsync(userManager,
+                options.SuperAdminEmail, options.SuperAdminPassword, "Super Administrator");
+            var admin = await EnsureUserAsync(userManager,
+                options.AdminEmail, options.AdminPassword, "Administrator");
 
-            var adminEmail = GetRequiredSetting(configuration, "IdentitySeed:AdminEmail");
-            var adminPassword = GetRequiredSetting(configuration, "IdentitySeed:AdminPassword");
-
-            var superAdmin = await EnsureUserAsync(userManager, superAdminEmail, superAdminPassword, "Super Administrator");
-            var admin = await EnsureUserAsync(userManager, adminEmail, adminPassword, "Administrator");
-
-            await EnsureUserInRoleAsync(userManager, superAdmin, IdentityRoleNames.SuperAdmin);
-            await EnsureUserInRoleAsync(userManager, admin, IdentityRoleNames.Admin);
-        }
-
-        private static string GetRequiredSetting(IConfiguration configuration, string key)
-        {
-            var value = configuration[key];
-
-            if (string.IsNullOrWhiteSpace(value))
-                throw new InvalidOperationException(
-                    $"Required configuration value '{key}' is missing or empty.");
-
-            return value;
+            await EnsureUserInRoleAsync(userManager, superAdmin, RoleNames.SuperAdmin);
+            await EnsureUserInRoleAsync(userManager, admin, RoleNames.Admin);
         }
 
         private static async Task EnsureRoleAsync(RoleManager<GymRole> roleManager,
