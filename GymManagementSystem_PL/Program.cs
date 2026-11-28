@@ -40,6 +40,8 @@ try
         }
     });
 
+    builder.Services.AddHostedService<LogRetentionService>();
+
     // Add services to the container.
     builder.Services.AddControllersWithViews(options =>
         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
@@ -62,6 +64,11 @@ try
     {
         app.UseExceptionHandler("/Home/Error");
         app.UseHsts();
+
+        if (builder.Configuration.GetValue<bool>("RunDatabaseInitialization"))
+        {
+            await app.MigrateAndSeedAsync();
+        }
     }
 
     app.UseSerilogRequestLogging();
@@ -83,7 +90,7 @@ try
 
     app.Run();
 }
-catch (Exception ex) when (ex.GetType().Name is not "HostAbortedException")
+catch (Exception ex) when (ex is not HostAbortedException)
 {
     Log.Fatal(ex, "Application terminated unexpectedly");
 }
